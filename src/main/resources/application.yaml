@@ -1,0 +1,45 @@
+server:
+  port: 8005
+
+spring:
+  application:
+    name: verify-credit-card-application-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/credit_card_verification_db
+    username: credit_card_user
+    password: password
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    generate-ddl: true
+    show-sql: false
+
+  cloud:
+    stream:
+      function:
+        definition: verifyCreditCardApplication
+
+      bindings:
+        verifyCreditCardApplication-in-0:
+          destination: Exchange_for_CreditCardApplication
+          group: creditCard
+          content-type: application/json
+          consumer:
+            max-attempts: 1
+
+        verifyCreditCardApplication-out-0:
+          destination: CreditCardVerification
+
+  rabbitmq:
+    host: ${RMQ_HOSTNAME:localhost}
+    port: ${RMQ_PORT:5672}
+    username: ${RMQ_USERNAME:guest}
+    password: ${RMQ_PASSWORD:guest}
+
+logging:
+  level:
+    org.springframework.cloud.stream: DEBUG
+    org.springframework.integration: DEBUG
+    org.springframework.amqp: DEBUG
+    org.springframework.core.retry: DEBUG
