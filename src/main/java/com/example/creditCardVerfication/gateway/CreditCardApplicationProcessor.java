@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import com.example.events.*;
 
+import java.util.List;
 import java.util.function.Function;
 
 @Configuration
@@ -26,6 +27,13 @@ public class CreditCardApplicationProcessor {
 
             log.info("**** Publishing credit card applications verification status : {} **** "
                     ,verifyCreditCardEvent.getCreditCardVerificationStatus().size());
+
+
+            List<CreditCardVerificationStatus> creditCardVerificationStatusList = verifyCreditCardEvent.getCreditCardVerificationStatus();
+
+            for(CreditCardVerificationStatus c: creditCardVerificationStatusList) {
+                log.info("-----------CreditCardVerificationEvent: {} ",c);
+            }
 
             //if none of the creditCard applications got approved
             return (verifyCreditCardEvent.getCreditCardVerificationStatus().isEmpty())? null : verifyCreditCardEvent;

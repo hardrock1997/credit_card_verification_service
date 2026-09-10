@@ -16,20 +16,30 @@ spring:
     show-sql: false
 
   cloud:
-    stream:
-      function:
-        definition: verifyCreditCardApplication
+    function:
+      definition: verifyCreditCardApplication
 
+    stream:
       bindings:
         verifyCreditCardApplication-in-0:
           destination: Exchange_for_CreditCardApplication
           group: creditCard
           content-type: application/json
           consumer:
-            max-attempts: 1
+            max-attempts: 5
+            back-off-initial-interval: 1000
+            back-off-max-interval: 10000
+            back-off-multiplier: 2.0
 
         verifyCreditCardApplication-out-0:
           destination: CreditCardVerification
+
+      rabbit:
+        bindings:
+          verifyCreditCardApplication-in-0:
+            consumer:
+              auto-bind-dlq: true
+              republish-to-dlq: true
 
   rabbitmq:
     host: ${RMQ_HOSTNAME:localhost}
@@ -43,3 +53,4 @@ logging:
     org.springframework.integration: DEBUG
     org.springframework.amqp: DEBUG
     org.springframework.core.retry: DEBUG
+

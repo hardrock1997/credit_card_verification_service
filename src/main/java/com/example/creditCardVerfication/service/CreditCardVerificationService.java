@@ -19,7 +19,6 @@ public class CreditCardVerificationService {
 
     public VerifyCreditCardEvent verifyCreditCardApplication(NewCreditCardEvent newCreditCardEvent) {
 
-        System.out.println("HERE");
         //getting the creditCardApplications that have been consumed by this service
         List<ApplicationDetail>creditCardApplications= newCreditCardEvent.getCreditCardApplications();
 
